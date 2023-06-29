@@ -67,5 +67,25 @@ public class MemberDAO {
         }
     }
 	
+	public boolean isAgreedToTerms(String memberId) throws Exception {
+        boolean agreed = false;
+        StringBuilder sql = new StringBuilder();
+        sql.append("SELECT agreed_to_terms FROM user_info WHERE id = ?");
+
+        try (Connection conn = new ConnectionFactory().getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql.toString());) {
+            pstmt.setString(1, memberId);
+
+            ResultSet rs = pstmt.executeQuery();
+            if (rs.next()) {
+                agreed = rs.getBoolean("agreed_to_terms");
+            }
+        }
+
+        return agreed;
+    }
+	
+	
+	
 	
 }

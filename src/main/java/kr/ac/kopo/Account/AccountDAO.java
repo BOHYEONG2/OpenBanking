@@ -43,21 +43,21 @@ public class AccountDAO {
         }
     }
 
-    public void transferMoney(int senderAcNumber, int receiverAcNumber, int amount) {
+    public void transferMoney(String senderAcNumber, String receiverAcNumber, int sendMoney) {
         String senderSql = "UPDATE ACCOUNT SET AC_MONEY = AC_MONEY - ? WHERE AC_NUMBER = ?";
         String receiverSql = "UPDATE ACCOUNT SET AC_MONEY = AC_MONEY + ? WHERE AC_NUMBER = ?";
 
         try (Connection conn = new ConnectionFactory().getConnection();
-                PreparedStatement senderPstmt = conn.prepareStatement(senderSql);
-                PreparedStatement receiverPstmt = conn.prepareStatement(receiverSql);) {
+             PreparedStatement senderPstmt = conn.prepareStatement(senderSql);
+             PreparedStatement receiverPstmt = conn.prepareStatement(receiverSql);) {
             conn.setAutoCommit(false);
 
-            senderPstmt.setInt(1, amount);
-            senderPstmt.setInt(2, senderAcNumber);
+            senderPstmt.setInt(1, sendMoney);
+            senderPstmt.setString(2, senderAcNumber);
             senderPstmt.executeUpdate();
 
-            receiverPstmt.setInt(1, amount);
-            receiverPstmt.setInt(2, receiverAcNumber);
+            receiverPstmt.setInt(1, sendMoney);
+            receiverPstmt.setString(2, receiverAcNumber);
             receiverPstmt.executeUpdate();
 
             conn.commit();
@@ -66,8 +66,7 @@ public class AccountDAO {
             e.printStackTrace();
         }
     }
-
-    public int getAccountBalance(int acNumber) {
+    public int getAccountMoney(int acNumber) {
         int balance = 0;
         String sql = "SELECT AC_MONEY FROM ACCOUNT WHERE AC_NUMBER = ?";
 
@@ -96,6 +95,7 @@ public class AccountDAO {
             e.printStackTrace();
         }
     }
+
 
     public List<AccountVO> getAccountList(AccountVO accountVO) {
         List<AccountVO> accountList = new ArrayList<>();
@@ -153,14 +153,14 @@ public class AccountDAO {
         }
         return account;
     }
-/*
-    public List<AccountRecordVO> getAccountRecords(int acNumber) {
+
+    public List<AccountRecordVO> getAccountRecords(String acNumber) {
         List<AccountRecordVO> accountRecords = new ArrayList<>();
         String sql = "SELECT * FROM AC_RECORD WHERE AC_NUMBER = ? ORDER BY RC_TIME DESC";
 
         try (Connection conn = new ConnectionFactory().getConnection();
-                PreparedStatement pstmt = conn.prepareStatement(sql);) {
-            pstmt.setInt(1, acNumber);
+             PreparedStatement pstmt = conn.prepareStatement(sql);) {
+            pstmt.setString(1, acNumber);
 
             ResultSet rs = pstmt.executeQuery();
             while (rs.next()) {
@@ -170,8 +170,11 @@ public class AccountDAO {
                 accountRecord.setRcName(rs.getString("RC_NAME"));
                 accountRecord.setRcMoney(rs.getInt("RC_MONEY"));
                 accountRecord.setRcTime(rs.getTimestamp("RC_TIME"));
+                accountRecord.setRcBalance(rs.getInt("RC_BALANCE"));
                 accountRecord.setAcNumber(rs.getString("AC_NUMBER"));
                 accountRecord.setId(rs.getString("ID"));
+                accountRecord.setRcNumber(rs.getInt("RC_NUMBER"));
+                accountRecord.setRcText(rs.getString("RC_TEXT"));
                 accountRecords.add(accountRecord);
             }
         } catch (Exception e) {
@@ -179,5 +182,5 @@ public class AccountDAO {
         }
         return accountRecords;
     }
-    */
+    
 }

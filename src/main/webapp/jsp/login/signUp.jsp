@@ -233,7 +233,7 @@
             </div>
             <div class="form-group">
 	            <label for="name">이름</label>
-	            <input type="text" class="form-control" id="name" placeholder="이름을 입력하세요" required>
+	            <input type="text" class="form-control" id="name" name="name" placeholder="이름을 입력하세요" required>
 	            <div class="invalid-feedback" id="nameError">이름을 잘못 입력했습니다.</div>
    		    </div>
             <div class="form-group">
@@ -252,7 +252,7 @@
             </div>
             <div class="form-group">
                 <label for="userCode">주민등록번호</label>
-                <input type="text" id="userCode" name="userCode" placeholder="XXXXXXXX-XXXXXXX" required>
+                <input type="text" id="userCode" name="usercode" placeholder="XXXXXXXX-XXXXXXX" required>
                 <div class="invalid-feedback">
                     주민등록번호의 형식이 올바르지 않습니다.
                 </div>
