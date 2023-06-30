@@ -13,7 +13,7 @@ public class AccountRecordVO {
 	 *  계좌 번호인 AC_NUMBER
 	 *  사용자 ID
 	 */
-	 private int rcNo;
+	 	private int rcNo;
 	    private String rcType;
 	    private String rcName;
 	    private int rcMoney;

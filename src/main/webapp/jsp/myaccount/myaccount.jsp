@@ -81,6 +81,7 @@
         </form>
 
         <form action="${pageContext.request.contextPath}/transactionHistory.do" method="post">
+            <input type="hidden" name="acNumber" value="" />
             <button type="submit" class="button">입출금 내역조회</button><br>
         </form>
 

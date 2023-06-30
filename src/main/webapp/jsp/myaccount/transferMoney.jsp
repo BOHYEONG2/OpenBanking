@@ -59,7 +59,7 @@ function displayErrorMessage(message) {
 
     <div class="row">
       <div class="col-md-6">
-    <form action="${pageContext.request.contextPath}/transferMoneyProcess.do" method="post">
+    <form action="${pageContext.request.contextPath}/transferCheck.do" method="post">
     <!-- 출금 계좌선택 -->
     <div class="form-group">
         <label for="selectBank">출금 계좌선택</label>

@@ -6,6 +6,7 @@ import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
 
+import kr.ac.kopo.Member.MemberDAO;
 import util.ConnectionFactory;
 /*
  * 해당 계좌의 입출금 내역
@@ -32,7 +33,9 @@ public class AccountDAO {
             pstmt.setString(2, account.getId());
             pstmt.setString(3, account.getAC_PW());
             pstmt.setString(4, account.getAC_NAME());
-            pstmt.setInt(5, account.getAC_MONEY());
+      //    pstmt.setInt(5, account.getAC_MONEY());
+     //       pstmt.setInt(5, (int) account.getAC_MONEY());
+            pstmt.setLong(5, account.getAC_MONEY());
             pstmt.setString(6, account.getSTATE());
             pstmt.setInt(7, account.getPD_NUMBER());
             pstmt.setString(8, account.getBank_cd());
@@ -44,7 +47,7 @@ public class AccountDAO {
     }
 
     public void transferMoney(String senderAcNumber, String receiverAcNumber, int sendMoney) {
-        String senderSql = "UPDATE ACCOUNT SET AC_MONEY = AC_MONEY - ? WHERE AC_NUMBER = ?";
+        String senderSql = "UPDATE ACCOUNT SET AC_MONEY = AC_MONEY - ? WHERE AC_NUMBER = ? ";
         String receiverSql = "UPDATE ACCOUNT SET AC_MONEY = AC_MONEY + ? WHERE AC_NUMBER = ?";
 
         try (Connection conn = new ConnectionFactory().getConnection();
@@ -54,6 +57,8 @@ public class AccountDAO {
 
             senderPstmt.setInt(1, sendMoney);
             senderPstmt.setString(2, senderAcNumber);
+   //         senderPstmt.setString(3, String.valueOf(accountPassword)); 
+       //     senderPstmt.setInt(3, accountPassword);
             senderPstmt.executeUpdate();
 
             receiverPstmt.setInt(1, sendMoney);
@@ -83,7 +88,54 @@ public class AccountDAO {
         }
         return balance;
     }
+    
+    public List<AccountVO> getAccountListById(AccountVO accountVO) {
+        List<AccountVO> accountList = new ArrayList<>();
 
+        try (Connection conn = new ConnectionFactory().getConnection();
+             PreparedStatement pstmt = conn.prepareStatement("SELECT * FROM ACCOUNT WHERE ID = ?")) {
+
+        	pstmt.setString(1, accountVO.getId());
+
+            ResultSet rs = pstmt.executeQuery();
+
+            while (rs.next()) {
+                AccountVO account = new AccountVO();
+                account.setAc_number(rs.getString("AC_NUMBER"));
+                account.setAC_NAME(rs.getString("AC_NAME"));
+                accountList.add(account);
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return accountList;
+    }
+/*    public List<AccountVO> getAccountListById(AccountVO accountVO) {
+        List<AccountVO> accountList = new ArrayList<>();
+
+        try (Connection conn = new ConnectionFactory().getConnection();
+             PreparedStatement pstmt = conn.prepareStatement("SELECT * FROM ACCOUNT WHERE ID = ?")) {
+
+            pstmt.setString(1, accountVO.getId());
+
+            ResultSet rs = pstmt.executeQuery();
+
+            while (rs.next()) {
+                AccountVO account = new AccountVO();
+                account.setAc_number(rs.getString("AC_NUMBER"));
+                account.setAC_NAME(rs.getString("AC_NAME"));
+                accountList.add(account);
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return accountList;
+    }
+    */
     public void closeAccount(int acNumber) {
         String sql = "UPDATE ACCOUNT SET STATE = '해지', AC_ED_DATE = sysdate WHERE AC_NUMBER = ?";
 
@@ -112,7 +164,8 @@ public class AccountDAO {
                 account.setId(rs.getString("ID"));
                 account.setAC_PW(rs.getString("AC_PW"));
                 account.setAC_NAME(rs.getString("AC_NAME"));
-                account.setAC_MONEY(rs.getInt("AC_MONEY"));
+                //account.setAC_MONEY(rs.getInt("AC_MONEY"));
+                account.setAC_MONEY((int) rs.getLong("AC_MONEY"));
                 account.setAC_OP_DATE(rs.getDate("AC_OP_DATE"));
                 account.setAC_ED_DATE(rs.getDate("AC_ED_DATE"));
                 account.setSTATE(rs.getString("STATE"));
@@ -147,13 +200,43 @@ public class AccountDAO {
                 account.setSTATE(rs.getString("STATE"));
                 account.setPD_NUMBER(rs.getInt("PD_NUMBER"));
                 account.setBank_cd(rs.getString("BANK_CD"));
+
+                // 받는 사람의 이름 설정
+                MemberDAO memberDAO = new MemberDAO();
+                String receiverName = memberDAO.getMemberNameByAccountNumber(accountNumber);
+                account.setName(receiverName);
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
         return account;
     }
+    
+    public void depositMoney(String acNumber, int depositAmount) {
+        String sql = "UPDATE ACCOUNT SET AC_MONEY = AC_MONEY + ? WHERE AC_NUMBER = ?";
 
+        try (Connection conn = new ConnectionFactory().getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql);) {
+            pstmt.setInt(1, depositAmount);
+            pstmt.setString(2, acNumber);
+            pstmt.executeUpdate();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void withdrawMoney(String acNumber, int withdrawAmount) {
+        String sql = "UPDATE ACCOUNT SET AC_MONEY = AC_MONEY - ? WHERE AC_NUMBER = ?";
+
+        try (Connection conn = new ConnectionFactory().getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql);) {
+            pstmt.setInt(1, withdrawAmount);
+            pstmt.setString(2, acNumber);
+            pstmt.executeUpdate();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
     public List<AccountRecordVO> getAccountRecords(String acNumber) {
         List<AccountRecordVO> accountRecords = new ArrayList<>();
         String sql = "SELECT * FROM AC_RECORD WHERE AC_NUMBER = ? ORDER BY RC_TIME DESC";
@@ -182,5 +265,7 @@ public class AccountDAO {
         }
         return accountRecords;
     }
+
+
     
 }

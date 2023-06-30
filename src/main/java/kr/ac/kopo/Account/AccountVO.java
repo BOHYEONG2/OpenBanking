@@ -17,8 +17,25 @@ public class AccountVO {
 	    private String STATE;
 	    private int PD_NUMBER;
 	    private String bank_cd;
+	    private String name;
 	    
 	    
+		public AccountVO(String name) {
+			super();
+			this.name = name;
+		}
+		/**
+		 * @return the name
+		 */
+		public String getName() {
+			return name;
+		}
+		/**
+		 * @param name the name to set
+		 */
+		public void setName(String name) {
+			this.name = name;
+		}
 		public AccountVO() {
 			super();
 
@@ -177,6 +194,8 @@ public class AccountVO {
 			PD_NUMBER = pD_NUMBER;
 			this.bank_cd = bank_cd;
 		}
+		
+	
 		
 	    
 }

@@ -1,11 +1,14 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Transfer Check</title>
+    <title>Transaction List</title>
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <style>
-     .sidebar {
+    
+       .sidebar {
             position: fixed;
             top: 50%;
             left: 10px;
@@ -33,34 +36,30 @@
         .sidebar .button:hover {
             background-color: gray;
         }
+    
         body {
             padding: 20px;
         }
+        .header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background-color: #f8f9fa;
+            padding: 10px 20px;
+            z-index: 999;
+        }
         .container {
             margin-top: 70px;
-        }
-        .card {
-            margin-bottom: 20px;
-        }
-        .card-header {
-            background-color: #f8f9fa;
-        }
-        .card-body {
-            padding: 15px;
-        }
-        .card-title {
-            font-size: 18px;
-            font-weight: bold;
-            margin-bottom: 10px;
         }
     </style>
 </head>
 <body>
   <header>
-    <%@include file="/index.jsp" %>
+    <jsp:include page="/index.jsp" />
   </header>
-	
-   <div class="sidebar">  	
+
+	  <div class="sidebar">  	
         <form action="${pageContext.request.contextPath}/myAccount.do" method="post">
             <button type="submit" class="button">나의계좌</button>
         </form>
@@ -80,43 +79,40 @@
         <form action="${pageContext.request.contextPath}/closeAccount.do" method="post">
             <button type="submit" class="button">계좌해지</button>
         </form>   
-    </div>	
+    </div>
     
- <div class="container">
-		<form action="${pageContext.request.contextPath}/transferMoneyProcess.do" method="post">
-    <div class="card">
-        <div class="card-header">
-            <h5 class="card-title">보내는 사람</h5>
-        </div>
-        <div class="card-body">
-           <input name="senderName" value="${loginUser.name}">
-           <input  name="senderAcNumber" value="<%= request.getAttribute("senderAcNumber") %>">
-      	   <input  name="sendMoney" value="<%= request.getAttribute("sendMoney") %>">
-           <input  name="message" value="<%= request.getAttribute("message") %>">
-        </div>
-    </div>
+  <div class="container">
+    <h2>입출금 내역</h2>
 
-    <div class="card">
-        <div class="card-header">
-            <h5 class="card-title">받는 사람</h5>
-        </div>
-        <div class="card-body">
-            <input  name="receiverBank" value="<%= request.getAttribute("receiverBank") %>">
-            <input name="receiverName" value="<%= request.getAttribute("receiverName") %>">
-            <input  name="receiverAcNumber" value="<%= request.getAttribute("receiverAcNumber") %>">
-            <input  name="message" value="<%= request.getAttribute("message") %>">
-        </div>
-    </div>
-		        <button type="submit" class="btn btn-primary">송금하기</button>
-		</form>
-</div>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>거래번호</th>
+                <th>거래유형</th>
+                <th>이름</th>
+                <th>거래금액</th>
+                <th>거래일시</th>
+                <th>거래후잔액</th>
+                <th>메시지</th>
+            </tr>
+        </thead>
+        <tbody>
+            <c:forEach var="record" items="${accountRecords}">
+                <tr>
+              	    <td>${accountRecord.rcNo}</td>
+                    <td>${accountRecord.rcType}</td>
+                    <td>${accountRecord.rcName}</td>
+                    <td>${accountRecord.rcMoney}</td>
+                    <td>${accountRecord.rcTime}</td>
+                    <td>${accountRecord.rcBalance}</td>
+                    <td>${accountRecord.rcText}</td>
+                </tr>
+            </c:forEach>
+        </tbody>
+    </table>
+  </div>
 
-
-
-<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@1.16.0/dist/umd/popper.min.js"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-
-
+  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
 </html>

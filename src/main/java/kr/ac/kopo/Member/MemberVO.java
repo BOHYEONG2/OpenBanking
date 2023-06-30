@@ -145,6 +145,7 @@ public class MemberVO {
 				+ usercode + ", phone=" + phone + ", postcode=" + postcode + ", address=" + address + ", user_type="
 				+ user_type + "]";
 	}
+	
 
 	
 	

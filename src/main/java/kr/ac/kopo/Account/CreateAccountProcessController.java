@@ -23,7 +23,9 @@ public class CreateAccountProcessController implements Controller {
 	        String accountPW = request.getParameter("ac_pw");
 	        System.out.println(accountPW);
 	        int ac_money = Integer.parseInt(request.getParameter("ac_money"));
+	     //   long ac_money = Long.parseLong(request.getParameter("ac_money"));
 	        String bankCode = "111";
+	        
 	        AccountVO vo = new AccountVO();
 	        vo.setAc_number(accountNum);
 	        vo.setId(userId);

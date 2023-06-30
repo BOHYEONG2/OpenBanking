@@ -11,7 +11,13 @@ import kr.ac.kopo.framework.Controller;
 
 public class TransferMoneyController implements Controller {
 	
-	
+/*	   private AccountDAO accountDAO;
+
+	    public TransferMoneyController() {
+	        // AccountDAO 객체를 생성하여 주입받음
+	        this.accountDAO = new AccountDAO();
+	    }
+	*/
 	@Override
     public String handleRequest(HttpServletRequest request, HttpServletResponse response) {
         

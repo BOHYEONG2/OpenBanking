@@ -84,6 +84,24 @@ public class MemberDAO {
 
         return agreed;
     }
+
+	public String getMemberNameByAccountNumber(String accountNumber) {
+	    String memberName = null;
+	    String sql = "SELECT NAME FROM USER_INFO WHERE ID = ?";
+
+	    try (Connection conn = new ConnectionFactory().getConnection();
+	            PreparedStatement pstmt = conn.prepareStatement(sql);) {
+	        pstmt.setString(1, accountNumber);
+
+	        ResultSet rs = pstmt.executeQuery();
+	        if (rs.next()) {
+	            memberName = rs.getString("NAME");
+	        }
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	    }
+	    return memberName;
+	}
 	
 	
 	

@@ -94,6 +94,10 @@
             <input type="text" class="form-control" id="id" name="id" value="${loginUser.id}" required>
         </div>
         <div class="form-group">
+		    <label for="name">이름:</label>
+		    <input type="text" class="form-control" id="name" name="name" value="${loginUser.name}" required>
+		</div>
+		        <div class="form-group">
             <label for="ac_name">계좌 이름:</label>
             <input type="text" class="form-control" id="ac_name" name="ac_name" required>
         </div>
