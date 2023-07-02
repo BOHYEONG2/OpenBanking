@@ -24,8 +24,8 @@
 	
     <div class="container">
         <h1 class="text-center mt-5">새글 쓰기</h1>
-        <form name="articleForm" method="post" action="${ pageContext.request.contextPath }/writeBoard.do">
-        <input type="hidden" id="userId" name="userId" value="${userId}">
+        <form name="articleForm" method="post" action="${pageContext.request.contextPath}/writeBoard.do">
+    <input type="hidden" id="userId" name="id" value="${commentList.userId}">
             <div class="mb-3">
                 <label for="title" class="form-label">글제목</label>
                 <input type="text" class="form-control" id="title" name="title" maxlength="500" required>

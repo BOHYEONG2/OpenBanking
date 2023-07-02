@@ -4,6 +4,7 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import kr.ac.kopo.Board.BoardDAO;
 import kr.ac.kopo.Board.BoardVO;
@@ -18,6 +19,9 @@ public class GetBoardController implements Controller{
 
 			int boardNo = Integer.parseInt(request.getParameter("boardNo"));
 
+		    HttpSession session = request.getSession();
+	        String userId = (String) session.getAttribute("id");
+	        System.out.println("user id : " + userId);
 	        // 게시글 조회
 	        BoardDAO boardDAO = new BoardDAO();
 	        BoardVO board = boardDAO.getBoardByNo(boardNo);

@@ -248,6 +248,7 @@
 
         <div class="comment-form">
             <form action="${ pageContext.request.contextPath }/writeComment.do" method="post" onsubmit="refreshPage()">
+            
                 <input type="hidden" name="id" value="${loginUser.id}" /> 
                 <input type="hidden" name="boardNo" value="${board.boardNo}" />
                 <textarea name="contents" placeholder="댓글을 입력하세요"></textarea>

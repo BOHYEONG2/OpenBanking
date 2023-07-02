@@ -33,7 +33,7 @@ public class BoardDAO {
 		List<BoardVO> boardList = new ArrayList<>();
 		
 		StringBuilder sql = new StringBuilder();
-		sql.append("SELECT BOARD_NO, USER_ID, TITLE, CONTENTS, BOARD_TIME, VIEWCNT FROM board ORDER BY BOARD_TIME ASC");
+		sql.append("SELECT BOARD_NO, USER_ID, TITLE, CONTENTS, BOARD_TIME, VIEWCNT FROM board ORDER BY BOARD_TIME DESC");
 		
 		try (Connection conn = new ConnectionFactory().getConnection();
 			 PreparedStatement pstmt = conn.prepareStatement(sql.toString());

@@ -19,7 +19,9 @@ public class BoardListController implements Controller {
 	        // 게시글 목록 조회 및 처리하는 로직을 작성
 	        HttpSession session = request.getSession();
 	        MemberVO login = (MemberVO) session.getAttribute("loginUser");
-
+	        String userID = login.getId();
+	        
+	        
 	        boolean isLoggedIn = (login != null);
 	        request.setAttribute("isLoggedIn", isLoggedIn);
 
@@ -37,7 +39,15 @@ public class BoardListController implements Controller {
 	        
 	        // 게시글 목록을 조회합니다.
 	        BoardDAO dao = new BoardDAO();
-	        List<BoardVO> boardList = dao.getBoardListPaging(pageNo, numPerPage);
+	        List<BoardVO> boardList;
+	        
+	        if (searchType != null && searchType.equals("id") && keyword != null && !keyword.isEmpty()) {
+	            // 아이디 검색 조건이 있는 경우 해당 아이디를 작성자로 가지는 게시글만 조회합니다.
+	            boardList = dao.getBoardListByUserId(keyword, pageNo, numPerPage);
+	        } else {
+	            // 일반적인 게시글 목록 조회
+	            boardList = dao.getBoardListPaging(pageNo, numPerPage);
+	        }
 	        
 	        // 각 게시글의 댓글 수를 가져와서 BoardVO 객체에 추가적인 필드로 저장합니다.
 	        for (BoardVO board : boardList) {
@@ -52,10 +62,15 @@ public class BoardListController implements Controller {
 	        int totalPages = (int) Math.ceil((double) totalCount / numPerPage);
 
 	        // 마지막 페이지 번호를 설정합니다.
-	        int lastPage = Math.max(totalPages, 1);
+	       // int lastPage = Math.max(totalPages, 1);
+	        int lastPage = 0;
+	        if (totalPages > 0) {
+	            lastPage = totalPages;
+	        }
 
 	        // 조회된 게시글 목록을 request 속성에 저장합니다.
 	        request.setAttribute("boardList", boardList);
+	        request.setAttribute("pageNo", pageNo);
 	        request.setAttribute("lastPage", lastPage);
 
 	        // 게시글 목록을 보여주는 JSP 페이지로 포워딩합니다.

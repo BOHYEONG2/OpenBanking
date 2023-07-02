@@ -90,7 +90,7 @@ request.setCharacterEncoding("UTF-8");
 							<td>
 								<a href="${contextPath}/getBoard.do?boardNo=${board.boardNo}">${board.title}</a>
 							<c:if test="${board.commentCount != 0}">
-									(${board.commentCount})
+									(댓글${board.commentCount})
 								</c:if>
 							</td>
 							
@@ -108,9 +108,7 @@ request.setCharacterEncoding("UTF-8");
 			<!-- 첫 번째 페이지로 이동하는 링크 -->
 			<a href="boardList.do?pageNo=1"><img src="/MyBanking/images/btn_first.gif" alt="첫 번째 페이지"></a>
 			<a href="${contextPath}/boardList.do?pageNo=${pageNo - 1}"><img src="${contextPath}/images/btn_pre.gif" alt="이전 페이지"></a>
-			<c:if test="${pageNo > 1}">
-				<a href="boardList.do?pageNo=${pageNo - 1}">이전 페이지</a>
-			</c:if>
+			
 
 		   <c:forEach begin="0" end="${lastPage}" step="1" varStatus="status">
         <c:choose>
@@ -125,15 +123,12 @@ request.setCharacterEncoding("UTF-8");
         </c:choose>
     </c:forEach>
 
-			<c:if test="${pageNo < lastPage}">
-				<a href="boardList.do?pageNo=${pageNo + 1}">다음 페이지</a>
-			</c:if>
+			
 			
 			<a href="${contextPath}/boardList.do?pageNo=${pageNo + 1}"><img src="${contextPath}/images/btn_next.gif" alt="다음 페이지"></a>
 			<!-- 마지막 페이지로 이동하는 링크 -->
 			<a href="boardList.do?pageNo=${lastPage}"><img src="/MyBanking/images/btn_last.gif" alt="마지막 페이지"></a>
 			
-		</div>
 		</div>
 		<div style="text-align: center; margin-top: 20px;">
 		    <form action="${contextPath}/boardList.do" method="get">
