@@ -80,8 +80,8 @@
             <button type="submit" class="button">계좌개설</button>
         </form>
 
-        <form action="${pageContext.request.contextPath}/transactionHistory.do" method="post">
-            <input type="hidden" name="acNumber" value="" />
+        <form action="${pageContext.request.contextPath}/transactionHistory.do?id=${loginUser.id}" method="post">
+       	    <input type="hidden" name="acNumber">         
             <button type="submit" class="button">입출금 내역조회</button><br>
         </form>
 

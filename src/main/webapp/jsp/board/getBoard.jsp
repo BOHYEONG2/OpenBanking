@@ -119,7 +119,36 @@
             color: #333;
             margin-top: 30px;
         }
+	
+	#deleteCommentModal {
+    display: none;
+    position: fixed;
+    z-index: 9999;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.4);
+}
 
+#modalContent {
+    background-color: #fefefe;
+    margin: 15% auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 40%;
+}
+
+#modalButtons {
+    text-align: right;
+    margin-top: 20px;
+}
+
+#modalButtons button {
+    padding: 8px 16px;
+    margin-left: 10px;
+}
         /* 모달 스타일 */
         #confirmationModal {
             display: none;
@@ -150,6 +179,30 @@
             padding: 8px 16px;
             margin-left: 10px;
         }
+    
+	
+		.comment-menu-options {
+		  display: flex;
+		  justify-content: center;
+		  align-items: center;
+		   width: 120px; 
+		  height: 100%; /* 댓글 행 전체 높이에 맞춰 주세요 */
+		}
+		
+		.comment-menu-options a {
+		  display: block;
+		  padding: 5px;
+		  margin: 0 5px;
+		}
+		
+		.comment-menu-options a.report {
+		  margin-right: auto;
+		  margin-left: auto;
+		}
+		
+		.comment-menu-options a:hover {
+		  background-color: lightgray; /* 마우스를 올렸을 때의 배경색 */
+		}
     </style>
 </head>
 <body>
@@ -159,8 +212,10 @@
     <div class="container">
         <h2>게시글 상세보기
         <div class="btn-edit-delete">
+         <c:if test="${board.userId eq loginUser.id}">
 		    <a href="${contextPath}/updateBoard.do?boardNo=${board.boardNo}">수정</a>
 		    <a href="#" onclick="showConfirmationModal(${board.boardNo})">삭제</a>
+		    </c:if>
 		</div>
 		</h2>
 
@@ -192,11 +247,11 @@
         </div>
 
         <div class="comment-form">
-            <form action="${ pageContext.request.contextPath }/writeComment.do" method="post">
+            <form action="${ pageContext.request.contextPath }/writeComment.do" method="post" onsubmit="refreshPage()">
                 <input type="hidden" name="id" value="${loginUser.id}" /> 
                 <input type="hidden" name="boardNo" value="${board.boardNo}" />
                 <textarea name="contents" placeholder="댓글을 입력하세요"></textarea>
-                <button type="submit">등록</button>
+                 <button type="submit" onclick="refreshPage()">등록</button>
             </form>
         </div>
 		
@@ -208,22 +263,39 @@
             <p class="empty-msg">등록된 댓글이 없습니다.</p>
         </c:when>
         <c:otherwise>
-            <table>
-                <c:forEach var="comment" items="${commentList}">
-                    <tr>
-                        <td class="comment-userId">${comment.userId}</td>
-                        <td class="comment-content">${comment.contents}</td>
-                        <td class="comment-date"><fmt:formatDate value="${comment.commentTime}" pattern="yyyy-MM-dd HH:mm:ss" /></td>
-                    </tr>
-                </c:forEach>
-            </table>
+       
+
+<table>
+    <c:forEach var="comment" items="${commentList}">
+        <tr>
+            <td class="comment-userId">${comment.userId}</td>
+            <td class="comment-content">${comment.contents}</td>
+            <td class="comment-date"><fmt:formatDate value="${comment.commentTime}" pattern="yyyy-MM-dd HH:mm:ss" /></td>
+            <td class="comment-actions">
+                <c:if test="${comment.userId eq loginUser.id}">
+                    <!-- 내가 작성한 댓글인 경우 -->
+                    <div class="comment-menu-options" id="commentMenuOptions_${comment.commentNo}">
+                        <a href="#" onclick="editComment(${comment.commentNo})">수정</a>
+                        <a href="#" onclick="showDeleteCommentModal(${comment.commentNo})">삭제</a>
+                    </div>
+                </c:if>
+                <c:if test="${comment.userId ne loginUser.id}">
+                    <!-- 다른 사람이 작성한 댓글인 경우 -->
+                    <div class="comment-menu-options" id="commentMenuOptions_${comment.commentNo}">
+                        <a href="#" onclick="reportComment(${comment.commentNo})">신고하기</a>
+                    </div>
+                </c:if>
+            </td>
+        </tr>
+    </c:forEach>
+</table>
         </c:otherwise>
     </c:choose>
 </div>
         
     </div>
 
-    <!-- 삭제 모달 -->
+    <!-- 게시글 삭제 모달 -->
     <div id="confirmationModal">
         <div id="modalContent">
             <h3>게시글 삭제</h3>
@@ -234,36 +306,79 @@
             </div>
         </div>
     </div>
+	    <!-- 댓글 삭제 모달 -->
+	<div id="deleteCommentModal">
+	    <div id="modalContent">
+	        <h3>댓글 삭제</h3>
+	        <p>댓글을 삭제하시겠습니까?</p>
+	        <div id="modalButtons">
+	            <button onclick="deleteComment()">확인</button>
+	            <button onclick="hideDeleteCommentModal()">취소</button>
+	        </div>
+	    </div>
+	</div>
 
     <script>
-        var boardNoToDelete = 0;
+    var boardNoToDelete = 0;
+    var commentNoToDelete = 0;
 
-        function showConfirmationModal(boardNo) {
-            boardNoToDelete = boardNo;
-            var modal = document.getElementById("confirmationModal");
-            modal.style.display = "block";
-        }
+    function showConfirmationModal(boardNo) {
+        boardNoToDelete = boardNo;
+        var modal = document.getElementById("confirmationModal");
+        modal.style.display = "block";
+    }
 
-        function hideConfirmationModal() {
-            var modal = document.getElementById("confirmationModal");
-            modal.style.display = "none";
-        }
+    function hideConfirmationModal() {
+        var modal = document.getElementById("confirmationModal");
+        modal.style.display = "none";
+    }
 
-        function deleteBoard() {
-            var modal = document.getElementById("confirmationModal");
-            modal.style.display = "none";
+    function deleteBoard() {
+        var modal = document.getElementById("confirmationModal");
+        modal.style.display = "none";
 
-            // AJAX 요청으로 게시글 삭제 수행
-            var xhr = new XMLHttpRequest();
-            xhr.onreadystatechange = function() {
-                if (xhr.readyState === 4 && xhr.status === 200) {
-                    // 삭제 성공 시, 페이지 리로드
-                    location.reload();
-                }
-            };
-            xhr.open("POST", "${contextPath}/deleteBoard.do", true);
-            xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-            xhr.send("boardNo=" + boardNoToDelete);
+        // AJAX 요청으로 게시글 삭제 수행
+        var xhr = new XMLHttpRequest();
+        xhr.onreadystatechange = function () {
+            if (xhr.readyState === 4 && xhr.status === 200) {
+                // 삭제 성공 시, 페이지 리로드
+                location.reload();
+            }
+        };
+        xhr.open("POST", "${contextPath}/deleteBoard.do", true);
+        xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+        xhr.send("boardNo=" + boardNoToDelete);
+    }
+
+    function showDeleteCommentModal(commentNo) {
+        commentNoToDelete = commentNo;
+        var modal = document.getElementById("deleteCommentModal");
+        modal.style.display = "block";
+    }
+
+    function hideDeleteCommentModal() {
+        var modal = document.getElementById("deleteCommentModal");
+        modal.style.display = "none";
+    }
+
+    function deleteComment() {
+        var modal = document.getElementById("deleteCommentModal");
+        modal.style.display = "none";
+
+        // AJAX 요청으로 댓글 삭제 수행
+        var xhr = new XMLHttpRequest();
+        xhr.onreadystatechange = function () {
+            if (xhr.readyState === 4 && xhr.status === 200) {
+                // 삭제 성공 시, 페이지 리로드
+                location.reload();
+            }
+        };
+        xhr.open("POST", "${contextPath}/deleteComment.do", true);
+        xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+        xhr.send("commentNo=" + commentNoToDelete);
+    }
+        function refreshPage() {
+            location.reload();
         }
     </script>
 </body>

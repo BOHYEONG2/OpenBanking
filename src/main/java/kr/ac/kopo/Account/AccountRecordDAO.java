@@ -12,11 +12,12 @@ import util.ConnectionFactory;
 public class AccountRecordDAO {
 
     public void insertTransaction(AccountRecordVO accountRecord) {
-        String sql = "INSERT INTO AC_RECORD (RC_NO, RC_TYPE, RC_NAME, RC_MONEY, RC_TIME, RC_BALANCE, AC_NUMBER, ID, RC_NUMBER, RC_TEXT) "
-                + "VALUES (AC_RECORD_SEQ.NEXTVAL, ?, ?, ?, SYSDATE, ?, ?, ?, ?, ?)";
-
+         String sql = "INSERT INTO AC_RECORD (RC_NO, RC_TYPE, RC_NAME, RC_MONEY, RC_TIME, RC_BALANCE, AC_NUMBER, ID, RC_NUMBER, RC_TEXT) "
+                + "VALUES (AC_RECORD_seq.NEXTVAL, ?, ?, ?, SYSDATE, ?, ?, ?, ?, ?)";
+        	
         try (Connection conn = new ConnectionFactory().getConnection();
-             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+             PreparedStatement pstmt = conn.prepareStatement(sql);
+        		) {
 
             pstmt.setString(1, accountRecord.getRcType());
             pstmt.setString(2, accountRecord.getRcName());
@@ -32,30 +33,40 @@ public class AccountRecordDAO {
             e.printStackTrace();
         }
     }
-    /*    public List<AccountVO> getAccountListById(AccountVO accountVO) {
-    List<AccountVO> accountList = new ArrayList<>();
+      
+    public List<AccountRecordVO> getAccountRecordsById(String id) {
+        List<AccountRecordVO> accountRecords = new ArrayList<>();
+        String sql = "SELECT * FROM AC_RECORD WHERE ID = ? ORDER BY RC_TIME DESC";
 
-    try (Connection conn = new ConnectionFactory().getConnection();
-         PreparedStatement pstmt = conn.prepareStatement("SELECT * FROM ACCOUNT WHERE ID = ?")) {
+        try (Connection conn = new ConnectionFactory().getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
 
-        pstmt.setString(1, accountVO.getId());
+            pstmt.setString(1, id);
 
-        ResultSet rs = pstmt.executeQuery();
-
-        while (rs.next()) {
-            AccountVO account = new AccountVO();
-            account.setAc_number(rs.getString("AC_NUMBER"));
-            account.setAC_NAME(rs.getString("AC_NAME"));
-            accountList.add(account);
+            ResultSet rs = pstmt.executeQuery();
+            int balance = 0; // 초기 잔액은 0으로 설정
+            while (rs.next()) {
+                AccountRecordVO accountRecord = new AccountRecordVO();
+                accountRecord.setRcNo(rs.getInt("RC_NO"));
+                accountRecord.setRcType(rs.getString("RC_TYPE"));
+                accountRecord.setRcName(rs.getString("RC_NAME"));
+                accountRecord.setRcMoney(rs.getInt("RC_MONEY"));
+                accountRecord.setRcTime(rs.getTimestamp("RC_TIME"));
+                accountRecord.setRcBalance(rs.getInt("RC_BALANCE"));
+                accountRecord.setAcNumber(rs.getString("AC_NUMBER"));
+                accountRecord.setId(rs.getString("ID"));
+                accountRecord.setRcNumber(rs.getInt("RC_NUMBER"));
+                accountRecord.setRcText(rs.getString("RC_TEXT"));
+                balance += accountRecord.getRcMoney(); // 잔액에 입출금액을 누적
+                accountRecord.setRcBalance(balance); // 누적된 잔액을 설정
+                accountRecords.add(accountRecord);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-
-    } catch (Exception e) {
-        e.printStackTrace();
+        return accountRecords;
     }
 
-    return accountList;
-}
-*/
     public List<AccountRecordVO> getAccountRecords(String acNumber) {
         List<AccountRecordVO> accountRecords = new ArrayList<>();
         String sql = "SELECT * FROM AC_RECORD WHERE AC_NUMBER = ? ORDER BY RC_TIME DESC";

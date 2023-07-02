@@ -1,94 +1,119 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8" 	pageEncoding="UTF-8" isELIgnored="false"%>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<c:set var="contextPath" value="${pageContext.request.contextPath}" />
+<%
+request.setCharacterEncoding("UTF-8");
+%>
 <!DOCTYPE html>
 <html>
 <head>
-<meta charset="UTF-8">
-<title>Insert title here</title>
-<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<style>
-.button {
-    width: 5cm;
-    height: 60px;
-    display: inline-block;
-    padding: 10px 20px;
-    border: none;
-    background-color: lightgray;
-    color: black;
-    text-align: center;
-    text-decoration: none;
-    font-size: 16px;
-    cursor: pointer;
-    border-radius: 0;
-  }
-  #button2{
-  background-color: rgb(44, 62, 80);
-    color: white;
-  }
-  .myHr {
-    width: 5cm;
-    margin-left: 0;
-  }
-</style>
-</head>
-<header>
-<jsp:include page="/index.jsp" />
-</header>
+	<title>����¡ ó��</title>
+	<link rel="stylesheet" href="../css/table.css" />
+	<style>
+		img {
+			border: 0px;
+		}
+	</style>
+</head>                          
 <body>
-<section id="breadcrumbs" class="breadcrumbs">
-      <div class="container">
-
-        <ol>
-          <li><a href="/index.jsp">홈</a></li>
-          <li>계좌</li>
-          <li>입출금 내역조회</li>
-        </ol>
-        <h2 style="font-size : 35px;">입출금 내역조회</h2>
-
-      </div>
-    </section><!-- End Breadcrumbs -->
-
-    <section class="inner-page">
-      <div class="container">
-      
-   
-   <form action="${pageContext.request.contextPath}/createAccount.do" method="post">
-    <button type="submit" class="button" id="button1">계좌개설</button>
-  </form>
-
-  <form action="${pageContext.request.contextPath}/transactionHistory.do" method="post">
-    <button type="submit" class="button" id="button2">입출금 내역조회</button><br>
-  </form>
-
-  <form action="${pageContext.request.contextPath}/openBanking.do" method="post">
-    <button type="submit" class="button">오픈뱅킹</button><br>
-  </form>
-
-  <form action="${pageContext.request.contextPath}/closeAccount.do" method="post">
-    <button type="submit" class="button">계좌해지</button>
-  </form>
-  
-  <form action="${pageContext.request.contextPath }/transactionHistoryProcess.do" class="transactionHistory" method="post">
-      <div class="container">
-            <div class="col-lg-8">
-                     <div class="form-group">
-                        <label for="accountType">조회하실 계좌를 선택해주세요</label> <select name="accountNum"
-                           class="form-control">
-                           <c:forEach var="account" items="${accountList}">
-                              <option value="${account.accountNum}">${account.accountNum}
-                                 - ${account.accountName} (${account.type})</option>
-                           </c:forEach>
-                        </select>
-                     </div>
-                     <div class="text-center">
-                            <button type="submit" class="btn btn-primary">조회</button>
-                        </div>
-                  </div>
-               </div>
-   </form>
-  
-  </div>
-  </section>
+	<header>
+		<jsp:include page="/index.jsp" />
+	</header>
+	<table>
+			<tr>
+				<th>글번호</th>
+				<th>작성자</th>
+				<th>제목</th>
+				<th>작성일</th>
+				<th>조회수</th>
+			</tr>
+			<c:choose>
+				<c:when test="${empty boardList}">
+					<tr>
+						<td colspan="4" class="empty-msg">등록된 글이 없습니다.</td>
+					</tr>
+				</c:when>
+				<c:otherwise>
+					<c:forEach var="board" items="${boardList}">
+						<tr>
+							<td>${board.boardNo}</td>
+							<td>${board.userId}</td>
+							<td>
+								<a href="${contextPath}/getBoard.do?boardNo=${board.boardNo}">${board.title}</a>
+							</td>
+							<td><fmt:formatDate value="${board.boardTime}" pattern="yyyy-MM-dd" /></td>
+							<td>${board.viewCnt}</td>
+						</tr>
+					</c:forEach>
+				</c:otherwise>
+			</c:choose>
+		</table>
+		
+		<%-- ����¡ ���̺� --%>
+		<table width="70%">
+		<tr>
+			<td valign="middle">
+			<%-- ó�� ������ ���� --%>
+			<c:choose>
+				<c:when test="${pageNo == 1}" >
+					<img alt="첫 페이지" src="../images/btn_first.gif" align="middle">
+				</c:when>
+				<c:otherwise>
+					<a href="list4.jsp?pageNo=1">
+						<img alt="ó������" src="../images/btn_first.gif" align="middle">
+					</a>
+				</c:otherwise>
+			</c:choose>
+			
+			<%-- ���� ������ ���� --%>
+			<c:choose>
+				<c:when test="${beginPage == 1}" >
+					<img alt="����" src="../images/btn_pre.gif" align="middle">
+				</c:when>
+				<c:otherwise>
+					<a href="list4.jsp?pageNo=${beginPage - 1}">
+						<img alt="����" src="../images/btn_pre.gif" align="middle">
+					</a>
+				</c:otherwise>
+			</c:choose>
+			
+			<%-- ������ ��ȣ ���� --%>			
+			<c:forEach var="i" begin="${beginPage}" end="${endPage}">
+				<c:if test="${i eq pageNo}">
+					<strong>[${i}]</strong>
+				</c:if>
+				<c:if test="${i ne pageNo}">
+					<a href="list4.jsp?pageNo=${i}">[${i}]</a>
+				</c:if>
+			</c:forEach>
+			
+			<%-- ���� ������ ���� --%>
+			<c:choose>
+				<c:when test="${endPage == lastPage}" >
+					<img alt="����" src="../images/btn_next.gif" align="middle">
+				</c:when>
+				<c:otherwise>
+					<a href="list4.jsp?pageNo=${endPage + 1}">
+						<img alt="����" src="../images/btn_next.gif" align="middle">
+					</a>
+				</c:otherwise>
+			</c:choose>
+			
+			<%-- ������ ������ ���� --%>
+			<c:choose>
+				<c:when test="${pageNo == lastPage}" >
+					<img alt="������" src="../images/btn_last.gif" align="middle">
+				</c:when>
+				<c:otherwise>
+					<a href="list4.jsp?pageNo=${lastPage}">
+						<img alt="������" src="../images/btn_last.gif" align="middle">
+					</a>
+				</c:otherwise>
+			</c:choose>
+			</td>
+		</tr>	
+		</table>
+	</div>
 </body>
 </html>

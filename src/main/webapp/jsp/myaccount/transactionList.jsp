@@ -68,7 +68,7 @@
             <button type="submit" class="button">계좌개설</button>
         </form>
 
-        <form action="${pageContext.request.contextPath}/transactionHistory.do" method="post">
+        <form action="${pageContext.request.contextPath}/transactionHistory.do?id=${loginUser.id}" method="post">
             <button type="submit" class="button">입출금 내역조회</button><br>
         </form>
 
@@ -97,7 +97,7 @@
             </tr>
         </thead>
         <tbody>
-            <c:forEach var="record" items="${accountRecords}">
+            <c:forEach var="accountRecord" items="${accountRecords}">
                 <tr>
               	    <td>${accountRecord.rcNo}</td>
                     <td>${accountRecord.rcType}</td>

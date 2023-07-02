@@ -10,11 +10,17 @@ public class BoardVO {
 	    private String contents;
 	    private int viewCnt;
 	    private Date boardTime;
-
+	    private int commentCount;
 	    public BoardVO() {
 	        super();
 	    }
+	    public int getCommentCount() {
+	        return commentCount;
+	    }
 
+	    public void setCommentCount(int commentCount) {
+	        this.commentCount = commentCount;
+	    }
 	    public int getBoardNo() {
 	        return boardNo;
 	    }

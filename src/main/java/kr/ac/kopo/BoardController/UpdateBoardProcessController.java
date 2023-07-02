@@ -39,6 +39,6 @@ public class UpdateBoardProcessController implements Controller {
 
         // 수정 후에 필요한 처리나 페이지로 리다이렉트 등을 수행
 
-        return "/jsp/board/boardList.jsp";
+        return "redirect:/MyBanking/boardList.do";
     }
 }

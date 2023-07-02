@@ -36,7 +36,7 @@ public class TransactionHistoryProcessController implements Controller{
 
 		   */
 		   HttpSession session = request.getSession();
-		    MemberVO user = (MemberVO) session.getAttribute("loginuser");
+		    MemberVO user = (MemberVO) session.getAttribute("loginUser");
 
 		    AccountDAO accountDAO = new AccountDAO();
 	//	    List<AccountVO> accountList = accountDAO.getAccountListById(user.getId());

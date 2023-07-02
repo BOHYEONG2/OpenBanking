@@ -26,7 +26,7 @@
             </div>
             <div class="mb-3">
                 <label for="content" class="form-label">글내용</label>
-                <textarea class="form-control" id="content" name="content" rows="10" cols="65" maxlength="4000" required>${board.content}</textarea>
+                <textarea class="form-control" id="content" name="contents" rows="10" cols="65" maxlength="4000" required>${board.contents}</textarea>
             </div>
             <div class="text-center">
                 <button type="submit" class="btn btn-primary">수정</button>
@@ -35,8 +35,13 @@
         </form>
     </div>
 
-    <!-- Bootstrap JS -->
+       <!-- Bootstrap JS -->
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/5.0.0-alpha1/js/bootstrap.min.js"></script>
+    <script type="text/javascript">
+        function reloadPage() {
+            location.reload();
+        }
+    </script>
 </body>
 
 </html>

@@ -29,6 +29,6 @@ public class WriteBoardController implements Controller {
 	        BoardDAO dao = new BoardDAO();
 	        dao.writeBoard(vo);
 
-	        return "/jsp/board/boardList.jsp";
+	        return "redirect:/MyBanking/boardList.do"; // 목록보기 페이지로 리다이렉트
 	    }
 	}

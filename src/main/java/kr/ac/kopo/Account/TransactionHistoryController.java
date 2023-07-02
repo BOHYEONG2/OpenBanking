@@ -13,28 +13,14 @@ public class TransactionHistoryController implements Controller {
 
 	@Override
 	public String handleRequest(HttpServletRequest request, HttpServletResponse response) {
-/*		
-		HttpSession session = request.getSession();
-		MemberVO user = (MemberVO) session.getAttribute("loginuser");
 
-		AccountVO accountVO = new AccountVO();
-		accountVO.setId(user.getId());
-
-		AccountDAO dao = new AccountDAO();
-		List<AccountVO> accountList = dao.getAccountListById(accountVO);
-
-		request.setAttribute("accountList", accountList);
-
-		return "/jsp/myaccount/transactionList.jsp";
-	}
-}
-*/		
-	
 	
 		// 세션에서 로그인된 사용자 정보 가져오기
 		HttpSession session = request.getSession();
-        MemberVO user = (MemberVO) session.getAttribute("loginuser");
+        MemberVO user = (MemberVO) session.getAttribute("loginUser");
         
+        String id = request.getParameter("id");
+    //    String id= user.getId();
         // 클라이언트로부터 전송된 파라미터 값들을 받아옴
         String acNumber = request.getParameter("acNumber");
 
@@ -42,12 +28,14 @@ public class TransactionHistoryController implements Controller {
         AccountRecordDAO accountRecordDAO = new AccountRecordDAO();
 
         // 입출금 내역 조회
-        List<AccountRecordVO> accountRecords = accountRecordDAO.getAccountRecords(acNumber);
+        List<AccountRecordVO> accountRecord = accountRecordDAO.getAccountRecordsById(id);
+        System.out.println("id " + id);
         System.out.println("acNumber : " + acNumber);
-        for(AccountRecordVO vo : accountRecords)
-        	System.out.println(vo);
+     //   for(AccountRecordVO vo : accountRecord)
+    //    	System.out.println(vo);
         // 조회된 내역을 request 속성에 저장
-        request.setAttribute("accountRecords", accountRecords);
+        
+        request.setAttribute("accountRecord", accountRecord);
 
         // 입출금 내역 조회 페이지로 이동
         return "/jsp/myaccount/transactionList.jsp";

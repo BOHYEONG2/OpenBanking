@@ -23,6 +23,8 @@ public class GetBoardController implements Controller{
 	        BoardVO board = boardDAO.getBoardByNo(boardNo);
 	        request.setAttribute("board", board);
 
+	        boardDAO.updateViewCount(boardNo);
+	        
 	        // 댓글 조회
 	        CommentDAO commentDAO = new CommentDAO();
 	        List<CommentVO> commentList = commentDAO.getCommentListByBoardNo(boardNo);

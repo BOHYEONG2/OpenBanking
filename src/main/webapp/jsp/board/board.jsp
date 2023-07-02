@@ -25,6 +25,7 @@
     <div class="container">
         <h1 class="text-center mt-5">새글 쓰기</h1>
         <form name="articleForm" method="post" action="${ pageContext.request.contextPath }/writeBoard.do">
+        <input type="hidden" id="userId" name="userId" value="${userId}">
             <div class="mb-3">
                 <label for="title" class="form-label">글제목</label>
                 <input type="text" class="form-control" id="title" name="title" maxlength="500" required>
@@ -40,10 +41,12 @@
         </form>
     </div>
 
-    <!-- Bootstrap JS -->
+      <!-- Bootstrap JS -->
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/5.0.0-alpha1/js/bootstrap.min.js"></script>
     <script type="text/javascript">
-   
+        function reloadPage() {
+            location.reload();
+        }
     </script>
 </body>
 

@@ -91,10 +91,10 @@
 <div class="login-form">
     <form action="${pageContext.request.contextPath}/loginProcess.do">
         <div class="input-group">
-            <input type="text" id="id" name="id" placeholder="아이디" value="aaa" required>
+            <input type="text" id="id" name="id" placeholder="아이디" value="bohyeong" required>
         </div>
         <div class="input-group">
-            <input type="password" id="password" name="password" placeholder="비밀번호" value="123" required>
+            <input type="password" id="password" name="password" placeholder="비밀번호" value="1234" required>
         </div>
         <input type="submit" value="로그인" class="login-button">
     </form>

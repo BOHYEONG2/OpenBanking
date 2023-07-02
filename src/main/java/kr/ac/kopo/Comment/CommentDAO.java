@@ -30,6 +30,7 @@ public class CommentDAO {
         }
     }
 
+    
     public List<CommentVO> getCommentListByBoardNo(int boardNo) {
         List<CommentVO> commentList = new ArrayList<>();
 
@@ -96,5 +97,28 @@ public class CommentDAO {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+    
+    public int getCommentCountByBoardNo(int boardNo) {
+        Connection conn = null;
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
+        int commentCount = 0;
+
+        try {
+            conn = new ConnectionFactory().getConnection();
+            String sql = "SELECT COUNT(*) FROM comments WHERE board_no = ?";
+            pstmt = conn.prepareStatement(sql);
+            pstmt.setInt(1, boardNo);
+            rs = pstmt.executeQuery();
+
+            if (rs.next()) {
+                commentCount = rs.getInt(1);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return commentCount;
     }
 }
